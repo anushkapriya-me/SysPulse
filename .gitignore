@@ -1,0 +1,23 @@
+## Build and Output Folders
+bin/
+obj/
+publish/
+
+## Visual Studio & IDEs
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## OS Generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+## Logs
+*.log
+crash.log
