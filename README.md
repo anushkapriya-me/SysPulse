@@ -1,4 +1,4 @@
-# ⚡ SysPulse — Cross-Platform Hardware Telemetry & Process Monitor
+# ⚡ SysPulse — Hardware Telemetry, Screen Time & Asset Inventory
 
 [![.NET 8.0](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
 [![Avalonia UI](https://img.shields.io/badge/Avalonia%20UI-11.1-purple.svg)](https://avaloniaui.net/)
@@ -6,52 +6,51 @@
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-orange.svg)]()
 
-**SysPulse** is a lightweight, high-performance hardware diagnostics and task manager desktop application built with **C# 12**, **.NET 8**, and **Avalonia UI 11**.
+**SysPulse** is a modern, high-performance hardware diagnostics, screen time tracking, and developer asset manager built with **C# 12**, **.NET 8**, and **Avalonia UI 11**.
 
-Engineered as an ultra-efficient alternative to bloated Electron apps and heavy WMI utilities, SysPulse consumes only **~35 MB of RAM** and operates with **<0.5% CPU overhead** while rendering live 60 FPS GPU-accelerated telemetry history curves.
+Consuming only **~35 MB of RAM** and running with **<0.5% CPU overhead**, SysPulse delivers smooth 60 FPS GPU-accelerated telemetry history curves, automatic IDE workspace discovery, and background application usage tracking.
 
 ---
 
 ## 🌟 Key Features
 
-- **📊 Real-Time KPI Dashboard**: At-a-glance monitoring of CPU load %, Physical RAM distribution, primary disk allocation, and live network I/O speeds.
-- **⚡ Deep Hardware Diagnostics**:
-  - **CPU Kernel Differentials**: Low-overhead Win32 `GetSystemTimes` execution cycle delta sampling.
-  - **Physical Memory Telemetry**: Direct Win32 `GlobalMemoryStatusEx` physical pool monitoring.
-  - **Dynamic Network Bandwidth**: Real-time Byte/s throughput rates across active network adapters.
-  - **Storage Partition Inspector**: Real-time capacity breakdown across all mounted fixed volumes.
-- **📈 Custom Immediate-Mode Geometry Charts**: Zero-dependency, GPU-accelerated 60-second scrolling sparklines with gradient area fills rendered directly via Avalonia's `StreamGeometry`.
-- **⚙️ Active Process Manager**:
-  - Live process table sorted by memory consumption.
-  - Real-time instant search filtering by process name or PID.
-  - Safe process termination with **recursive process tree cleanup** (`proc.Kill(entireProcessTree: true)`).
+### 1. 📊 Real-Time Hardware Telemetry
+- **Accurate CPU Diagnostics**: Low-overhead Win32 `GetSystemTimes` execution cycle delta sampling (strictly normalized under 100%).
+- **Physical Memory Pool**: Direct Win32 `GlobalMemoryStatusEx` physical RAM monitoring.
+- **Dynamic Network Bandwidth**: Real-time Byte/s throughput rates across active network adapters.
+- **Storage Partition Inspector**: Real-time capacity breakdown across all mounted fixed volumes.
+- **60-Second Sliding History Graphs**: Custom GPU-rendered sparklines via Avalonia's `StreamGeometry`.
 
----
+### 2. ⚙️ Active Process Manager (With Selection Lock)
+- Live process table sorted by memory consumption.
+- **Persistent Selection Lock**: Selected processes stay selected across telemetry ticks until you explicitly deselect or end the task.
+- Real-time instant search filtering by process name or PID.
+- Safe process termination with **recursive process tree cleanup** (`proc.Kill(entireProcessTree: true)`).
 
-## 🏛️ Architecture & Design Patterns
+### 3. ⏱️ Application Screen Time Tracker
+- **Total Screen Time**: Automatic background tracking of active computer usage.
+- **Per-App Usage Breakdown**: Categorized application times (Development, Web Browsing, Productivity, Media).
+- **Percentage Share**: Visual percentage bars (strictly under 100%) showing app focus share.
+- **Pause & Reset Controls**: One-click control over activity monitoring.
 
-The project is structured around the **Model-View-ViewModel (MVVM)** pattern with Inversion-of-Control Dependency Injection:
+### 4. 🧰 Developer Asset Inventory (Auto-Discovery)
+- **Automatic IDE Detection**: Discovers installed and active IDEs without manual configuration:
+  - Visual Studio Code & Insiders
+  - Cursor AI Editor
+  - Microsoft Visual Studio (2022/2019 Community, Pro, Enterprise)
+  - Zed Editor
+  - JetBrains Suite (IntelliJ IDEA, PyCharm, Rider, WebStorm)
+  - Sublime Text & Notepad++
+- **Open Workspaces & Solutions**: Scans running windows and recent workspace storage to list active projects and solutions with quick-launch triggers.
 
-```
-SysPulse/
-├── Controls/
-│   └── HistoryGraph.cs          # Immediate-mode custom GPU-rendered geometry control
-├── Models/
-│   ├── HardwareSnapshot.cs      # Consolidated real-time telemetry state
-│   ├── DiskMetric.cs            # Drive statistics & unit formatting
-│   └── ProcessMetric.cs         # Process memory, CPU %, and status
-├── Services/
-│   ├── ISystemTelemetryService.cs # Abstracted telemetry contract
-│   └── SystemTelemetryService.cs  # Win32 P/Invoke & BCL system telemetry engine
-├── ViewModels/
-│   ├── ViewModelBase.cs         # CommunityToolkit.Mvvm base
-│   └── MainWindowViewModel.cs   # Data binding, 1s refresh loop, filtering & commands
-├── Views/
-│   ├── MainWindow.axaml         # Fluent Dark theme UI (Sidebar, KPI Cards, TabControl)
-│   └── MainWindow.axaml.cs
-├── App.axaml / App.axaml.cs     # Microsoft.Extensions.DependencyInjection configuration
-└── Program.cs                   # Application bootstrapper with crash diagnostics
-```
+### 5. 🔧 Settings & AI-Explored Hardware Specs
+- **Configurable Refresh Intervals**: Clickable dropdown supporting 1s (Live), 2s (Normal), 5s (Balanced), and 10s (Eco Mode).
+- **Threshold Alerts**: Warning notifications for high CPU (>85%) or RAM (>90%) usage.
+- **Hardware & Battery Telemetry**:
+  - Live battery percentage, charging state, and remaining runtime.
+  - Motherboard manufacturer, product model, and BIOS revision.
+  - Processor full branding and instruction architecture.
+- **Startup Preferences**: Toggle launch on Windows startup and minimize-to-tray.
 
 ---
 
@@ -62,25 +61,20 @@ SysPulse/
 
 ### Quick Start
 ```powershell
-# Clone the repository
-git clone https://github.com/<your-username>/SysPulse.git
-cd SysPulse
-
-# Build and run
+# Run from repository
+cd D:\SysPulse
 dotnet run
 ```
 
 ---
 
-## 📦 Producing a Standalone Single-File Executable
+## 📦 Standalone Single-File Binary
 
-To generate a standalone `.exe` that runs on any 64-bit Windows machine **without requiring the .NET SDK or runtime installed**:
+A self-contained `.exe` with the integrated app icon that runs on any 64-bit Windows machine without requiring .NET:
 
-```powershell
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o ./publish
 ```
-
-The self-contained binary will be produced at `./publish/SysPulse.exe`.
+D:\SysPulse\publish\SysPulse.exe
+```
 
 ---
 

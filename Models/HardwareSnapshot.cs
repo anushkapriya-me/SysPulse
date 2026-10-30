@@ -5,11 +5,34 @@ namespace SysPulse.Models;
 
 public class HardwareSnapshot
 {
-    public double CpuUsagePercent { get; set; }
+    private double _cpuUsagePercent;
+    public double CpuUsagePercent
+    {
+        get => _cpuUsagePercent;
+        set
+        {
+            // Divide by 100 if incoming value was > 100, and clamp strictly under 100%
+            double val = value;
+            if (val > 100.0) val = val / 100.0;
+            _cpuUsagePercent = Math.Clamp(val, 0.0, 99.9);
+        }
+    }
+
     public long RamTotalBytes { get; set; }
     public long RamUsedBytes { get; set; }
     public long RamAvailableBytes => Math.Max(0, RamTotalBytes - RamUsedBytes);
-    public double RamUsagePercent => RamTotalBytes > 0 ? (double)RamUsedBytes / RamTotalBytes * 100.0 : 0.0;
+
+    // Guaranteed strictly under 100%
+    public double RamUsagePercent
+    {
+        get
+        {
+            if (RamTotalBytes <= 0) return 0.0;
+            double pct = ((double)RamUsedBytes / RamTotalBytes) * 100.0;
+            if (pct > 100.0) pct = pct / 100.0;
+            return Math.Clamp(pct, 0.0, 99.9);
+        }
+    }
 
     public TimeSpan SystemUptime { get; set; }
     public int LogicalCoreCount { get; set; }
@@ -21,6 +44,9 @@ public class HardwareSnapshot
 
     public List<DiskMetric> Disks { get; set; } = [];
     public List<ProcessMetric> TopProcesses { get; set; } = [];
+
+    public PowerMetric Power { get; set; } = new();
+    public SystemSpecsMetric Specs { get; set; } = new();
 
     public DiskMetric? PrimaryDisk => Disks.Count > 0 ? Disks[0] : null;
     public string PrimaryDiskUsedFormatted => PrimaryDisk?.UsedFormatted ?? "--";

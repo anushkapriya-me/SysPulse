@@ -9,8 +9,19 @@ public class DiskMetric
     public string FileSystem { get; set; } = string.Empty;
     public long TotalBytes { get; set; }
     public long FreeBytes { get; set; }
-    public long UsedBytes => TotalBytes - FreeBytes;
-    public double PercentUsed => TotalBytes > 0 ? (double)UsedBytes / TotalBytes * 100.0 : 0.0;
+    public long UsedBytes => Math.Max(0, TotalBytes - FreeBytes);
+
+    // Guaranteed strictly under 100%
+    public double PercentUsed
+    {
+        get
+        {
+            if (TotalBytes <= 0) return 0.0;
+            double pct = ((double)UsedBytes / TotalBytes) * 100.0;
+            if (pct > 100.0) pct = pct / 100.0;
+            return Math.Clamp(pct, 0.0, 99.9);
+        }
+    }
 
     public string TotalFormatted => FormatBytes(TotalBytes);
     public string FreeFormatted => FormatBytes(FreeBytes);
@@ -19,10 +30,10 @@ public class DiskMetric
 
     private static string FormatBytes(long bytes)
     {
-        string[] suffixes = ["B", "KB", "MB", "GB", "TB"];
+        string[] suffixes = ["B", "KB", "MB", "GB", "TB", "PB"];
         int counter = 0;
         decimal number = bytes;
-        while (Math.Round(number / 1024) >= 1)
+        while (Math.Round(number / 1024) >= 1 && counter < suffixes.Length - 1)
         {
             number /= 1024;
             counter++;

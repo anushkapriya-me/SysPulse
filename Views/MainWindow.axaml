@@ -6,8 +6,9 @@
         x:Class="SysPulse.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="SysPulse - Hardware Resource Monitor"
-        Width="1120" Height="740"
-        MinWidth="920" MinHeight="620"
+        Icon="/Assets/SysPulse.ico"
+        Width="1160" Height="780"
+        MinWidth="960" MinHeight="660"
         WindowStartupLocation="CenterScreen"
         Background="#0D1117">
 
@@ -27,9 +28,9 @@
             <Setter Property="Foreground" Value="#8B949E" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="Padding" Value="14,12" />
+            <Setter Property="Padding" Value="12,10" />
             <Setter Property="CornerRadius" Value="8" />
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
         </Style>
         <Style Selector="Button.NavButton:pointerover /template/ ContentPresenter">
@@ -39,68 +40,99 @@
 
         <!-- Header labels -->
         <Style Selector="TextBlock.SectionTitle">
-            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="#8B949E" />
         </Style>
         <Style Selector="TextBlock.MetricValue">
-            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontSize" Value="26" />
             <Setter Property="FontWeight" Value="Bold" />
             <Setter Property="Foreground" Value="#F0F6FC" />
         </Style>
+
+        <!-- Modern ComboBox style for Refresh Interval -->
+        <Style Selector="ComboBox.IntervalCombo">
+            <Setter Property="Background" Value="#1C2128" />
+            <Setter Property="BorderBrush" Value="#30363D" />
+            <Setter Property="Foreground" Value="#58A6FF" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Padding" Value="10,4" />
+        </Style>
     </Window.Styles>
 
-    <Grid ColumnDefinitions="230,*">
+    <Grid ColumnDefinitions="240,*">
 
         <!-- ================= SIDEBAR ================= -->
         <Border Grid.Column="0" Background="#11141A" BorderBrush="#21262D" BorderThickness="0,0,1,0" Padding="14">
             <Grid RowDefinitions="Auto,*,Auto">
 
                 <!-- Logo / App Title -->
-                <StackPanel Grid.Row="0" Margin="4,8,4,24">
+                <StackPanel Grid.Row="0" Margin="4,8,4,20">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <TextBlock Text="⚡" FontSize="22" VerticalAlignment="Center" />
                         <TextBlock Text="SysPulse" FontSize="20" FontWeight="ExtraBold" Foreground="#58A6FF" VerticalAlignment="Center" />
                     </StackPanel>
-                    <TextBlock Text="Hardware Telemetry Engine" FontSize="11" Foreground="#8B949E" Margin="30,-2,0,0" />
+                    <TextBlock Text="Hardware &amp; Asset Intelligence" FontSize="11" Foreground="#8B949E" Margin="30,-2,0,0" />
                 </StackPanel>
 
                 <!-- Navigation Links -->
-                <StackPanel Grid.Row="1" Spacing="4">
-                    <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="0">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="📊" FontSize="16" />
-                            <TextBlock Text="Dashboard" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="1">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="⚡" FontSize="16" />
-                            <TextBlock Text="CPU &amp; Memory" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="2">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="💾" FontSize="16" />
-                            <TextBlock Text="Storage Drives" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="3">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="🌐" FontSize="16" />
-                            <TextBlock Text="Network Traffic" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="4">
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock Text="⚙️" FontSize="16" />
-                            <TextBlock Text="Processes" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="3">
+                        <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="0">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="📊" FontSize="15" />
+                                <TextBlock Text="Dashboard" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="1">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="⚡" FontSize="15" />
+                                <TextBlock Text="CPU &amp; Memory" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="2">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="💾" FontSize="15" />
+                                <TextBlock Text="Storage Drives" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="3">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="🌐" FontSize="15" />
+                                <TextBlock Text="Network Traffic" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="4">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="⚙️" FontSize="15" />
+                                <TextBlock Text="Active Processes" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="5">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="⏱️" FontSize="15" />
+                                <TextBlock Text="Screen Time" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="6">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="🧰" FontSize="15" />
+                                <TextBlock Text="Asset Inventory" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="NavButton" Command="{Binding NavigateCommand}" CommandParameter="7">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="🔧" FontSize="15" />
+                                <TextBlock Text="Settings &amp; Specs" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
 
                 <!-- System Metadata Footer -->
-                <Border Grid.Row="2" Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="12">
+                <Border Grid.Row="2" Background="#161B22" BorderBrush="#30363D" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,10,0,0">
                     <StackPanel Spacing="4">
                         <TextBlock Text="{Binding Snapshot.MachineName}" FontSize="12" FontWeight="Bold" Foreground="#F0F6FC" TextTrimming="CharacterEllipsis" />
                         <TextBlock Text="{Binding Snapshot.OsDescription}" FontSize="11" Foreground="#8B949E" TextTrimming="CharacterEllipsis" />
@@ -115,38 +147,54 @@
         </Border>
 
         <!-- ================= MAIN CONTENT ================= -->
-        <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="24,18,24,20">
+        <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*" Margin="24,18,24,20">
 
             <!-- Header Bar -->
-            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                     <TextBlock Text="System Telemetry Monitor" FontSize="20" FontWeight="Bold" Foreground="#F0F6FC" />
                     <TextBlock Text="{Binding StatusMessage}" FontSize="12" Foreground="#8B949E" Margin="0,2,0,0" />
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <Border Background="#1C2128" BorderBrush="#30363D" BorderThickness="1" CornerRadius="16" Padding="12,6">
-                        <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-                            <Ellipse Width="8" Height="8" Fill="#3FB950" />
-                            <TextBlock Text="LIVE (1s)" FontSize="11" FontWeight="Bold" Foreground="#3FB950" VerticalAlignment="Center" />
-                        </StackPanel>
-                    </Border>
+                <!-- Interactive Refresh Interval Selector -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Text="Interval:" FontSize="12" Foreground="#8B949E" VerticalAlignment="Center" />
+                    <ComboBox Classes="IntervalCombo"
+                              ItemsSource="{Binding RefreshIntervals}"
+                              SelectedItem="{Binding SelectedRefreshInterval}"
+                              VerticalAlignment="Center">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:RefreshIntervalOption">
+                                <TextBlock Text="{Binding Label}" FontSize="12" FontWeight="SemiBold" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
             </Grid>
 
+            <!-- Alert Notification Banner -->
+            <Border Grid.Row="1" IsVisible="{Binding IsAlertVisible}"
+                    Background="#381E1E" BorderBrush="#F85149" BorderThickness="1"
+                    CornerRadius="8" Padding="12,8" Margin="0,0,0,14">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="{Binding AlertMessage}" Foreground="#FF7B72" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <Button Grid.Column="1" Command="{Binding DismissAlertCommand}"
+                            Background="Transparent" Foreground="#FF7B72" FontWeight="Bold" Content="✕" Padding="6,2" />
+                </Grid>
+            </Border>
+
             <!-- Tab Content Switcher -->
-            <TabControl Grid.Row="1"
+            <TabControl Grid.Row="2"
                         SelectedIndex="{Binding SelectedNavIndex}"
                         Padding="0"
                         Margin="0">
                 <TabControl.Styles>
-                    <!-- Hide standard TabControl header strip -->
                     <Style Selector="TabControl /template/ ItemsPresenter#PART_ItemsPresenter">
                         <Setter Property="IsVisible" Value="False" />
                     </Style>
                 </TabControl.Styles>
 
-                <!-- TAB 0: DASHBOARD OVERVIEW -->
+                <!-- ================= TAB 0: DASHBOARD ================= -->
                 <TabItem>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <Grid RowDefinitions="Auto,*" Margin="0,0,4,0">
@@ -242,7 +290,7 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <!-- TAB 1: CPU & MEMORY DETAILS -->
+                <!-- ================= TAB 1: CPU & MEMORY ================= -->
                 <TabItem>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Spacing="18">
@@ -253,7 +301,7 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackPanel>
                                             <TextBlock Text="Processor Telemetry" FontSize="16" FontWeight="Bold" Foreground="#F0F6FC" />
-                                            <TextBlock Text="Real-time kernel &amp; user time execution cycles" FontSize="12" Foreground="#8B949E" />
+                                            <TextBlock Text="{Binding Snapshot.Specs.ProcessorName}" FontSize="12" Foreground="#8B949E" />
                                         </StackPanel>
                                         <TextBlock Grid.Column="1" Text="{Binding Snapshot.CpuFormatted}" FontSize="24" FontWeight="Bold" Foreground="#58A6FF" VerticalAlignment="Center" />
                                     </Grid>
@@ -264,19 +312,19 @@
                                         <Border Grid.Column="0" Background="#0D1117" Padding="12" CornerRadius="6" Margin="0,0,8,0">
                                             <StackPanel>
                                                 <TextBlock Text="Cores / Threads" FontSize="11" Foreground="#8B949E" />
-                                                <TextBlock Text="{Binding Snapshot.LogicalCoreCount}" FontSize="16" FontWeight="Bold" Foreground="#F0F6FC" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding Snapshot.LogicalCoreCount, StringFormat='{}{0} Threads'}" FontSize="15" FontWeight="Bold" Foreground="#F0F6FC" Margin="0,4,0,0" />
                                             </StackPanel>
                                         </Border>
                                         <Border Grid.Column="1" Background="#0D1117" Padding="12" CornerRadius="6" Margin="0,0,8,0">
                                             <StackPanel>
-                                                <TextBlock Text="Update Frequency" FontSize="11" Foreground="#8B949E" />
-                                                <TextBlock Text="1000 ms" FontSize="16" FontWeight="Bold" Foreground="#F0F6FC" Margin="0,4,0,0" />
+                                                <TextBlock Text="Architecture" FontSize="11" Foreground="#8B949E" />
+                                                <TextBlock Text="{Binding Snapshot.Specs.Architecture}" FontSize="15" FontWeight="Bold" Foreground="#F0F6FC" Margin="0,4,0,0" />
                                             </StackPanel>
                                         </Border>
                                         <Border Grid.Column="2" Background="#0D1117" Padding="12" CornerRadius="6">
                                             <StackPanel>
-                                                <TextBlock Text="Architecture" FontSize="11" Foreground="#8B949E" />
-                                                <TextBlock Text="64-bit (x64)" FontSize="16" FontWeight="Bold" Foreground="#F0F6FC" Margin="0,4,0,0" />
+                                                <TextBlock Text="Power / Battery" FontSize="11" Foreground="#8B949E" />
+                                                <TextBlock Text="{Binding Snapshot.Power.BatteryPercentFormatted}" FontSize="15" FontWeight="Bold" Foreground="#3FB950" Margin="0,4,0,0" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
@@ -300,19 +348,19 @@
                                         <Border Grid.Column="0" Background="#0D1117" Padding="12" CornerRadius="6" Margin="0,0,8,0">
                                             <StackPanel>
                                                 <TextBlock Text="Installed RAM" FontSize="11" Foreground="#8B949E" />
-                                                <TextBlock Text="{Binding Snapshot.RamTotalFormatted}" FontSize="16" FontWeight="Bold" Foreground="#F0F6FC" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding Snapshot.RamTotalFormatted}" FontSize="15" FontWeight="Bold" Foreground="#F0F6FC" Margin="0,4,0,0" />
                                             </StackPanel>
                                         </Border>
                                         <Border Grid.Column="1" Background="#0D1117" Padding="12" CornerRadius="6" Margin="0,0,8,0">
                                             <StackPanel>
                                                 <TextBlock Text="In Use" FontSize="11" Foreground="#8B949E" />
-                                                <TextBlock Text="{Binding Snapshot.RamUsedFormatted}" FontSize="16" FontWeight="Bold" Foreground="#BC8CFF" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding Snapshot.RamUsedFormatted}" FontSize="15" FontWeight="Bold" Foreground="#BC8CFF" Margin="0,4,0,0" />
                                             </StackPanel>
                                         </Border>
                                         <Border Grid.Column="2" Background="#0D1117" Padding="12" CornerRadius="6">
                                             <StackPanel>
                                                 <TextBlock Text="Available" FontSize="11" Foreground="#8B949E" />
-                                                <TextBlock Text="{Binding Snapshot.RamAvailableFormatted}" FontSize="16" FontWeight="Bold" Foreground="#3FB950" Margin="0,4,0,0" />
+                                                <TextBlock Text="{Binding Snapshot.RamAvailableFormatted}" FontSize="15" FontWeight="Bold" Foreground="#3FB950" Margin="0,4,0,0" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
@@ -322,7 +370,7 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <!-- TAB 2: STORAGE DRIVES -->
+                <!-- ================= TAB 2: STORAGE DRIVES ================= -->
                 <TabItem>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Spacing="16">
@@ -371,7 +419,7 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <!-- TAB 3: NETWORK TRAFFIC -->
+                <!-- ================= TAB 3: NETWORK TRAFFIC ================= -->
                 <TabItem>
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Spacing="18">
@@ -415,7 +463,7 @@
                     </ScrollViewer>
                 </TabItem>
 
-                <!-- TAB 4: ACTIVE PROCESSES -->
+                <!-- ================= TAB 4: ACTIVE PROCESSES ================= -->
                 <TabItem>
                     <Grid RowDefinitions="Auto,Auto,*">
 
@@ -480,6 +528,299 @@
                             </ListBox>
                         </Border>
                     </Grid>
+                </TabItem>
+
+                <!-- ================= TAB 5: SCREEN TIME ================= -->
+                <TabItem>
+                    <Grid RowDefinitions="Auto,*">
+
+                        <!-- Top Screen Time Summary Bar -->
+                        <Grid Grid.Row="0" ColumnDefinitions="*,*,Auto" Margin="0,0,0,16">
+
+                            <!-- Total Screen Time Card -->
+                            <Border Grid.Column="0" Classes="MetricCard" Margin="0,0,10,0">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="TOTAL SCREEN TIME (ACTIVE)" Classes="SectionTitle" Foreground="#58A6FF" />
+                                    <TextBlock Text="{Binding TotalScreenTimeFormatted}" Classes="MetricValue" />
+                                    <TextBlock Text="Automatic background usage tracking" FontSize="11" Foreground="#8B949E" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Most Active App Card -->
+                            <Border Grid.Column="1" Classes="MetricCard" Margin="0,0,10,0">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="MOST USED APPLICATION" Classes="SectionTitle" Foreground="#3FB950" />
+                                    <TextBlock Text="{Binding TopScreenTimeApp}" Classes="MetricValue" FontSize="20" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="Highest share of foreground focus" FontSize="11" Foreground="#8B949E" />
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Actions -->
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="8">
+                                <Button Command="{Binding ToggleScreenTimeTrackingCommand}"
+                                        Background="#21262D" Foreground="#F0F6FC" Padding="14,8" CornerRadius="6">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="⏸️" />
+                                        <TextBlock Text="Pause / Resume" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Command="{Binding ResetScreenTimeCommand}"
+                                        Background="#21262D" Foreground="#8B949E" Padding="14,8" CornerRadius="6">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="🔄" />
+                                        <TextBlock Text="Reset Stats" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Per-App Usage Breakdown List -->
+                        <Border Grid.Row="1" Classes="MetricCard">
+                            <Grid RowDefinitions="Auto,*">
+                                <Grid Grid.Row="0" ColumnDefinitions="*,120,160,100" Margin="0,0,0,12">
+                                    <TextBlock Grid.Column="0" Text="Application" FontWeight="Bold" Foreground="#8B949E" FontSize="12" />
+                                    <TextBlock Grid.Column="1" Text="Category" FontWeight="Bold" Foreground="#8B949E" FontSize="12" />
+                                    <TextBlock Grid.Column="2" Text="Duration" FontWeight="Bold" Foreground="#8B949E" FontSize="12" />
+                                    <TextBlock Grid.Column="3" Text="Share %" FontWeight="Bold" Foreground="#8B949E" FontSize="12" />
+                                </Grid>
+
+                                <ListBox Grid.Row="1" ItemsSource="{Binding ScreenTimes}" Background="Transparent">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:DataType="models:AppScreenTimeMetric">
+                                            <Grid ColumnDefinitions="*,120,160,100" Margin="0,6">
+                                                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding IconEmoji}" FontSize="16" />
+                                                    <TextBlock Text="{Binding AppName}" FontWeight="SemiBold" Foreground="#F0F6FC" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                                </StackPanel>
+
+                                                <Border Grid.Column="1" Background="#21262D" CornerRadius="4" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Category}" FontSize="11" Foreground="#8B949E" />
+                                                </Border>
+
+                                                <TextBlock Grid.Column="2" Text="{Binding FormattedDuration}" Foreground="#58A6FF" FontWeight="SemiBold" VerticalAlignment="Center" />
+
+                                                <StackPanel Grid.Column="3" Spacing="4" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding PercentageFormatted}" Foreground="#3FB950" FontWeight="Bold" FontSize="12" />
+                                                    <ProgressBar Value="{Binding SafePercentage}" Maximum="100" Height="4" CornerRadius="2" Foreground="#3FB950" Background="#21262D" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </TabItem>
+
+                <!-- ================= TAB 6: ASSET INVENTORY (IDEs & Workspaces) ================= -->
+                <TabItem>
+                    <Grid RowDefinitions="Auto,*">
+
+                        <!-- Inventory KPI Summary -->
+                        <Grid Grid.Row="0" ColumnDefinitions="*,*,*,Auto" Margin="0,0,0,16">
+                            <Border Grid.Column="0" Classes="MetricCard" Margin="0,0,10,0">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="INSTALLED IDES" Classes="SectionTitle" Foreground="#58A6FF" />
+                                    <TextBlock Text="{Binding InstalledIdesCount}" Classes="MetricValue" />
+                                    <TextBlock Text="Auto-discovered compilers &amp; editors" FontSize="11" Foreground="#8B949E" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Classes="MetricCard" Margin="0,0,10,0">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="ACTIVE RUNNING" Classes="SectionTitle" Foreground="#3FB950" />
+                                    <TextBlock Text="{Binding RunningIdesCount}" Classes="MetricValue" />
+                                    <TextBlock Text="IDEs currently in memory" FontSize="11" Foreground="#8B949E" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Classes="MetricCard" Margin="0,0,10,0">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="OPEN WORKSPACES" Classes="SectionTitle" Foreground="#FFA657" />
+                                    <TextBlock Text="{Binding OpenProjectsCount}" Classes="MetricValue" />
+                                    <TextBlock Text="Detected projects across IDEs" FontSize="11" Foreground="#8B949E" />
+                                </StackPanel>
+                            </Border>
+
+                            <Button Grid.Column="3" Command="{Binding RefreshAssetInventoryCommand}"
+                                    Background="#21262D" Foreground="#F0F6FC" Padding="14,12" CornerRadius="8" VerticalAlignment="Center">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <TextBlock Text="🔄" />
+                                    <TextBlock Text="Rescan IDEs" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <!-- Discovered IDE Cards -->
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding DetectedIdes}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:IdeAsset">
+                                        <Border Classes="MetricCard" Margin="0,0,0,14">
+                                            <StackPanel Spacing="12">
+                                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding IconEmoji}" FontSize="24" VerticalAlignment="Center" />
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                                <TextBlock Text="{Binding Name}" FontSize="16" FontWeight="Bold" Foreground="#F0F6FC" />
+                                                                <Border Background="#21262D" CornerRadius="4" Padding="6,2" VerticalAlignment="Center">
+                                                                    <TextBlock Text="{Binding Version}" FontSize="10" Foreground="#8B949E" />
+                                                                </Border>
+                                                            </StackPanel>
+                                                            <TextBlock Text="{Binding ExecutablePath}" FontSize="11" Foreground="#8B949E" TextTrimming="CharacterEllipsis" Margin="0,2,0,0" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+
+                                                    <Border Grid.Column="1" Background="#21262D" CornerRadius="12" Padding="10,4" Margin="0,0,12,0" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding StatusText}" Foreground="{Binding StatusBadgeColor}" FontWeight="Bold" FontSize="11" />
+                                                    </Border>
+
+                                                    <Button Grid.Column="2"
+                                                            Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).LaunchIdeCommand}"
+                                                            CommandParameter="{Binding ExecutablePath}"
+                                                            IsEnabled="{Binding IsInstalled}"
+                                                            Background="#21262D" Foreground="#58A6FF" Padding="10,6" CornerRadius="6" VerticalAlignment="Center">
+                                                        <TextBlock Text="Launch 🚀" FontSize="11" FontWeight="Bold" />
+                                                    </Button>
+                                                </Grid>
+
+                                                <!-- Open / Recent Projects in this IDE -->
+                                                <Border Background="#0D1117" CornerRadius="6" Padding="12" IsVisible="{Binding ProjectCount, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                                    <StackPanel Spacing="6">
+                                                        <TextBlock Text="{Binding ProjectCountText, StringFormat='Workspaces / Projects ({0}):'}" FontSize="11" FontWeight="Bold" Foreground="#8B949E" />
+                                                        <ItemsControl ItemsSource="{Binding OpenProjects}">
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate x:DataType="models:IdeWorkspaceProject">
+                                                                    <Grid ColumnDefinitions="*,Auto" Margin="0,3">
+                                                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                                                            <TextBlock Text="📁" FontSize="13" />
+                                                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" Foreground="#F0F6FC" FontSize="12" VerticalAlignment="Center" />
+                                                                            <TextBlock Text="{Binding Path}" Foreground="#6E7681" FontSize="11" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                                                        </StackPanel>
+                                                                        <Border Grid.Column="1" Background="#161B22" CornerRadius="4" Padding="6,2">
+                                                                            <TextBlock Text="{Binding LastOpenedText}" Foreground="{Binding StatusBadgeColor}" FontSize="10" FontWeight="SemiBold" />
+                                                                        </Border>
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+
+                <!-- ================= TAB 7: SETTINGS & HARDWARE SPECS ================= -->
+                <TabItem>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Spacing="16">
+
+                            <!-- AI-Explored Hardware & System Specs -->
+                            <Border Classes="MetricCard">
+                                <StackPanel Spacing="12">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="🖥️" FontSize="18" />
+                                        <TextBlock Text="Hardware Specifications &amp; WMI System Registry" FontSize="15" FontWeight="Bold" Foreground="#F0F6FC" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                    <TextBlock Text="Detailed BIOS, motherboard, battery, and architecture metrics" FontSize="11" Foreground="#8B949E" />
+
+                                    <Grid ColumnDefinitions="*,*,*" Margin="0,6,0,0">
+                                        <Border Grid.Column="0" Background="#0D1117" Padding="12" CornerRadius="6" Margin="0,0,8,0">
+                                            <StackPanel Spacing="2">
+                                                <TextBlock Text="Processor Name" FontSize="11" Foreground="#8B949E" />
+                                                <TextBlock Text="{Binding Snapshot.Specs.ProcessorName}" FontSize="12" FontWeight="Bold" Foreground="#F0F6FC" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{Binding Snapshot.Specs.Architecture}" FontSize="11" Foreground="#58A6FF" />
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Grid.Column="1" Background="#0D1117" Padding="12" CornerRadius="6" Margin="0,0,8,0">
+                                            <StackPanel Spacing="2">
+                                                <TextBlock Text="Motherboard &amp; BIOS" FontSize="11" Foreground="#8B949E" />
+                                                <TextBlock Text="{Binding Snapshot.Specs.MotherboardModel}" FontSize="12" FontWeight="Bold" Foreground="#F0F6FC" TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{Binding Snapshot.Specs.BiosVersion, StringFormat='BIOS: {0}'}" FontSize="11" Foreground="#8B949E" TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Grid.Column="2" Background="#0D1117" Padding="12" CornerRadius="6">
+                                            <StackPanel Spacing="2">
+                                                <TextBlock Text="Power &amp; Battery State" FontSize="11" Foreground="#8B949E" />
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <TextBlock Text="{Binding Snapshot.Power.BatteryIcon}" FontSize="14" />
+                                                    <TextBlock Text="{Binding Snapshot.Power.BatteryPercentFormatted}" FontSize="12" FontWeight="Bold" Foreground="#3FB950" />
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Snapshot.Power.PowerStatusText}" FontSize="11" Foreground="#8B949E" TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Preferences: Refresh & Telemetry -->
+                            <Border Classes="MetricCard">
+                                <StackPanel Spacing="14">
+                                    <TextBlock Text="⚙️ Telemetry &amp; Refresh Customization" FontSize="15" FontWeight="Bold" Foreground="#F0F6FC" />
+
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel>
+                                            <TextBlock Text="Telemetry Refresh Rate" FontWeight="SemiBold" Foreground="#F0F6FC" />
+                                            <TextBlock Text="Configure frequency of diagnostic sampling (1s, 2s, 5s, 10s)" FontSize="11" Foreground="#8B949E" />
+                                        </StackPanel>
+                                        <ComboBox Grid.Column="1" Classes="IntervalCombo"
+                                                  ItemsSource="{Binding RefreshIntervals}"
+                                                  SelectedItem="{Binding SelectedRefreshInterval}" />
+                                    </Grid>
+
+                                    <Separator Background="#21262D" />
+
+                                    <TextBlock Text="Resource Alert Thresholds" FontWeight="SemiBold" Foreground="#F0F6FC" />
+                                    <Grid ColumnDefinitions="*,*">
+                                        <StackPanel Grid.Column="0" Margin="0,0,10,0" Spacing="6">
+                                            <TextBlock Text="{Binding Settings.CpuAlertThreshold, StringFormat='CPU Alert Threshold: {0:0}%'}" FontSize="12" Foreground="#8B949E" />
+                                            <Slider Value="{Binding Settings.CpuAlertThreshold}" Minimum="50" Maximum="95" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Spacing="6">
+                                            <TextBlock Text="{Binding Settings.RamAlertThreshold, StringFormat='RAM Alert Threshold: {0:0}%'}" FontSize="12" Foreground="#8B949E" />
+                                            <Slider Value="{Binding Settings.RamAlertThreshold}" Minimum="60" Maximum="98" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Startup & Privacy Options -->
+                            <Border Classes="MetricCard">
+                                <StackPanel Spacing="12">
+                                    <TextBlock Text="🔒 System Startup &amp; Privacy" FontSize="15" FontWeight="Bold" Foreground="#F0F6FC" />
+
+                                    <CheckBox IsChecked="{Binding Settings.StartWithWindows}">
+                                        <TextBlock Text="Launch SysPulse automatically on Windows startup" Foreground="#F0F6FC" FontSize="13" />
+                                    </CheckBox>
+
+                                    <CheckBox IsChecked="{Binding Settings.EnableScreenTimeTracking}">
+                                        <TextBlock Text="Enable background application Screen Time tracking" Foreground="#F0F6FC" FontSize="13" />
+                                    </CheckBox>
+
+                                    <CheckBox IsChecked="{Binding Settings.EnableAlerts}">
+                                        <TextBlock Text="Show warning notifications on critical resource consumption" Foreground="#F0F6FC" FontSize="13" />
+                                    </CheckBox>
+
+                                    <Button Command="{Binding SaveSettingsCommand}"
+                                            Background="#238636" Foreground="#FFFFFF" FontWeight="Bold"
+                                            Padding="18,10" CornerRadius="6" HorizontalAlignment="Left" Margin="0,8,0,0">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <TextBlock Text="💾" />
+                                            <TextBlock Text="Save Preferences" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
                 </TabItem>
             </TabControl>
         </Grid>

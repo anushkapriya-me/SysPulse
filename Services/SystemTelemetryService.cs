@@ -5,8 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using Microsoft.Win32;
 using SysPulse.Models;
 
 namespace SysPulse.Services;
@@ -23,6 +23,7 @@ public class SystemTelemetryService : ISystemTelemetryService
     private DateTime _prevNetworkTime = DateTime.UtcNow;
 
     private readonly Dictionary<int, (TimeSpan CpuTime, DateTime Timestamp)> _processCpuHistory = new();
+    private SystemSpecsMetric? _cachedSpecs;
 
     public SystemTelemetryService()
     {
@@ -57,7 +58,9 @@ public class SystemTelemetryService : ISystemTelemetryService
                 LogicalCoreCount = Environment.ProcessorCount,
                 SystemUptime = TimeSpan.FromMilliseconds(Environment.TickCount64),
                 CpuUsagePercent = CalculateCpuUsage(),
-                Disks = GetDiskMetrics()
+                Disks = GetDiskMetrics(),
+                Power = GetPowerMetrics(),
+                Specs = GetSystemSpecs()
             };
 
             var (totalRam, availRam) = GetMemoryMetrics();
@@ -97,6 +100,15 @@ public class SystemTelemetryService : ISystemTelemetryService
             return 0.0;
         }
 
+        // Detect unsigned wrap-around due to clock jitter
+        if (currentIdle < _prevIdleTime || currentKernel < _prevKernelTime || currentUser < _prevUserTime)
+        {
+            _prevIdleTime = currentIdle;
+            _prevKernelTime = currentKernel;
+            _prevUserTime = currentUser;
+            return 0.0;
+        }
+
         var idleDiff = currentIdle - _prevIdleTime;
         var kernelDiff = currentKernel - _prevKernelTime;
         var userDiff = currentUser - _prevUserTime;
@@ -108,8 +120,9 @@ public class SystemTelemetryService : ISystemTelemetryService
         var totalDiff = kernelDiff + userDiff;
         if (totalDiff == 0) return 0.0;
 
-        var cpu = (1.0 - ((double)idleDiff / totalDiff)) * 100.0;
-        return Math.Clamp(cpu, 0.0, 100.0);
+        double cpu = (1.0 - ((double)idleDiff / totalDiff)) * 100.0;
+        if (cpu > 100.0) cpu = cpu / 100.0;
+        return Math.Clamp(cpu, 0.0, 99.9);
     }
 
     private static (long Total, long Available) GetMemoryMetrics()
@@ -123,10 +136,75 @@ public class SystemTelemetryService : ISystemTelemetryService
             }
         }
 
-        // Fallback for non-Windows or if API fails
         var total = 16L * 1024 * 1024 * 1024;
         var used = GC.GetTotalMemory(false) * 20;
         return (total, Math.Max(0, total - used));
+    }
+
+    private PowerMetric GetPowerMetrics()
+    {
+        var metric = new PowerMetric();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            if (GetSystemPowerStatus(out var status))
+            {
+                metric.IsAcConnected = status.ACLineStatus == 1;
+                // BatteryLifePercent == 255 means no system battery
+                metric.HasBattery = status.BatteryLifePercent != 255 && (status.BatteryFlag & 128) == 0;
+                metric.IsCharging = (status.BatteryFlag & 8) != 0;
+                double pct = status.BatteryLifePercent;
+                if (pct > 100.0) pct = pct / 100.0;
+                metric.BatteryPercent = Math.Clamp(pct, 0.0, 99.9);
+                metric.EstimatedRemainingMinutes = status.BatteryLifeTime > 0 ? status.BatteryLifeTime / 60 : -1;
+            }
+        }
+        return metric;
+    }
+
+    private SystemSpecsMetric GetSystemSpecs()
+    {
+        if (_cachedSpecs != null) return _cachedSpecs;
+
+        var specs = new SystemSpecsMetric
+        {
+            LogicalCores = Environment.ProcessorCount,
+            Architecture = RuntimeInformation.OSArchitecture.ToString(),
+            MachineName = Environment.MachineName,
+            UserName = Environment.UserName,
+            WindowsEdition = RuntimeInformation.OSDescription
+        };
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            try
+            {
+                using var cpuKey = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\CentralProcessor\0");
+                if (cpuKey != null)
+                {
+                    var name = cpuKey.GetValue("ProcessorNameString") as string;
+                    if (!string.IsNullOrWhiteSpace(name))
+                    {
+                        specs.ProcessorName = name.Trim();
+                    }
+                }
+
+                using var biosKey = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\BIOS");
+                if (biosKey != null)
+                {
+                    specs.MotherboardManufacturer = (biosKey.GetValue("SystemManufacturer") as string) ?? "Unknown";
+                    specs.MotherboardModel = (biosKey.GetValue("SystemProductName") as string) ?? 
+                                            (biosKey.GetValue("BaseBoardProduct") as string) ?? "Generic";
+                    specs.BiosVersion = (biosKey.GetValue("BIOSVersion") as string) ?? "Unknown";
+                }
+            }
+            catch
+            {
+                // Non-critical fallback
+            }
+        }
+
+        _cachedSpecs = specs;
+        return specs;
     }
 
     private (double DownSpeed, double UpSpeed) CalculateNetworkSpeeds()
@@ -208,7 +286,7 @@ public class SystemTelemetryService : ISystemTelemetryService
         {
             var result = new List<ProcessMetric>();
             var now = DateTime.UtcNow;
-            var coreCount = Environment.ProcessorCount;
+            var coreCount = Math.Max(1, Environment.ProcessorCount);
 
             var processes = Process.GetProcesses();
             foreach (var proc in processes)
@@ -231,14 +309,15 @@ public class SystemTelemetryService : ISystemTelemetryService
                             if (timeDelta > 0.05)
                             {
                                 cpuPercent = (cpuDelta / (timeDelta * coreCount)) * 100.0;
-                                cpuPercent = Math.Clamp(cpuPercent, 0.0, 100.0);
+                                if (cpuPercent > 100.0) cpuPercent = cpuPercent / 100.0;
+                                cpuPercent = Math.Clamp(cpuPercent, 0.0, 99.9);
                             }
                         }
                         _processCpuHistory[id] = (totalCpu, now);
                     }
                     catch
                     {
-                        // Some system processes deny access to CPU time; leave as 0
+                        // Some system processes deny access to CPU time
                     }
 
                     result.Add(new ProcessMetric
@@ -310,6 +389,20 @@ public class SystemTelemetryService : ISystemTelemetryService
         out System.Runtime.InteropServices.ComTypes.FILETIME lpIdleTime,
         out System.Runtime.InteropServices.ComTypes.FILETIME lpKernelTime,
         out System.Runtime.InteropServices.ComTypes.FILETIME lpUserTime);
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct SYSTEM_POWER_STATUS
+    {
+        public byte ACLineStatus;
+        public byte BatteryFlag;
+        public byte BatteryLifePercent;
+        public byte SystemStatusFlag;
+        public int BatteryLifeTime;
+        public int BatteryFullLifeTime;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern bool GetSystemPowerStatus(out SYSTEM_POWER_STATUS lpSystemPowerStatus);
 
     private static ulong ToUInt64(System.Runtime.InteropServices.ComTypes.FILETIME ft)
     {
